@@ -3,6 +3,7 @@
 - added hits and ratings and for output of download in index.php (goffy)
 - added number of subcategories for output of category in index.php (goffy)
 - added new lang vars (goffy)
+- replaced truncate description by smarty truncateHtml (goffy)
 
 <h5>2.0 RC 1         [2019-01-29]</h5>
 <hr>

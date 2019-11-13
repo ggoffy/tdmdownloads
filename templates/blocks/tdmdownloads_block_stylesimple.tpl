@@ -16,7 +16,13 @@
                 <{/if}>
                 <p class="tdmdownloads-blocktitle"><{$downloads.title}></p>
                 <{if $downloads.description}>
-                    <p class="tdmdownloads-blockdesc"><{$downloads.description}></p>
+                    <p class="tdmdownloads-blockdesc">
+                        <{if $truncateHtml}>
+                            <{$downloads.description|truncateHtml:$truncateHtml:'...'}>
+                        <{else}>
+                            <{$downloads.description}>
+                        <{/if}>                        
+                    </p>
                 <{/if}>
                 <{if $downloads.inforation}>
                     <p class="tdmdownloads-blockinfo">
