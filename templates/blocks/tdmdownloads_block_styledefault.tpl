@@ -19,11 +19,7 @@
                             <img class="<{$downloads.logourl_class}>" width="<{$downloads.logourl_width}>" src="<{$downloads.logourl}>" alt="<{$downloads.title}>">
                         <{/if}>
                         <{if $downloads.description != ""}>
-                            <{if $truncateHtml}>
-                                <{$downloads.description|truncateHtml:$truncateHtml:'...'}>
-                            <{else}>
-                                <{$downloads.description}>
-                            <{/if}>
+                            <{$downloads.description}>
                             <span class="itemPermaLink">
                                 <a title="<{$downloads.title}>" href="<{$xoops_url}>/modules/tdmdownloads/singlefile.php?lid=<{$downloads.lid}>" rel="directory">--></a>
                             </span>

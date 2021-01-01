@@ -101,15 +101,26 @@ function b_tdmdownloads_top_show($options)
             $titleFinal = mb_strlen($titleFinal) > $lenght_title ? mb_substr($titleFinal, 0, $lenght_title) . '...' : $titleFinal;
         }
         $block[$i]['title'] = $titleFinal;
+        $descriptionFinal  = '';
         if (true == $use_description) {
+            $description = $downloadsArray[$i]->getVar('description');
             //permet d'afficher uniquement la description courte
             if ($length_description > 0) {
-                $GLOBALS['xoopsTpl']->assign('truncateHtml', $length_description);
+                if (false === mb_strpos($description, '[pagebreak]')) {
+                    $descriptionFinal = mb_substr($description, 0, $length_description);
+                    if (mb_strlen($description) > mb_strlen($descriptionFinal)) {
+                        $descriptionFinal .= ' ...';
+                    }
+                } else {
+                    $descriptionFinal = mb_substr($description, 0, mb_strpos($description, '[pagebreak]')) . ' ...';
+                }
+            } else {
+                $descriptionFinal = $description;
             }
-            $block[$i]['description'] = $downloadsArray[$i]->getVar('description');
         }
-        
-        $logourl = '';
+        $block[$i]['description'] = $descriptionFinal;
+        $logourl                  = '';
+
         if (true == $use_logo) {
             if ('blank.gif' === $downloadsArray[$i]->getVar('logourl') || '' === $downloadsArray[$i]->getVar('logourl')) {
                 $logourl = '';
