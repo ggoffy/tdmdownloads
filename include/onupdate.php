@@ -266,33 +266,35 @@ function update_tdmdownloads_v200(&$module)
 function update_tdmdownloads_v167(&$module)
 {
     $moduleDirName = basename(dirname(__DIR__));
+    $modulePath    = XOOPS_ROOT_PATH . '/modules/' . $moduleDirName;
+
     // rename module dir from upper case to lower case
-    rename(XOOPS_ROOT_PATH . '/modules/TDMDownloads', XOOPS_ROOT_PATH . '/modules/' . $moduleDirName);
+    rename(XOOPS_ROOT_PATH . '/modules/TDMDownloads', $modulePath);
     // rename upload dir from upper case to lower case
     rename(XOOPS_ROOT_PATH . '/uploads/TDMDownloads', XOOPS_ROOT_PATH . '/uploads/' . $moduleDirName);
     // files have been moved to assets-folder
-    $src = XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/css/';
+    $src = $modulePath . '/css/';
     rrmdir($src);
-    $src = XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/images/';
+    $src = $modulePath . '/images/';
     rrmdir($src);
     // delete unneeded/replacfiles
     // unlink( XOOPS_ROOT_PATH.'/modules/' . $moduleDirName . '/admin/admin_header.php' );
     // clean template directory
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_brokenfile.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_download.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_index.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_modfile.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_ratefile.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_singlefile.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_submit.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_viewcat.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_liste.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/tdmdownloads_rss.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/blocks/tdmdownloads_block_new.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/blocks/tdmdownloads_block_random.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/blocks/tdmdownloads_block_rating.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/blocks/tdmdownloads_block_search.html');
-    @unlink(XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/templates/blocks/tdmdownloads_block_top.html');
+    @unlink($modulePath . '/templates/tdmdownloads_brokenfile.html');
+    @unlink($modulePath . '/templates/tdmdownloads_download.html');
+    @unlink($modulePath . '/templates/tdmdownloads_index.html');
+    @unlink($modulePath . '/templates/tdmdownloads_modfile.html');
+    @unlink($modulePath . '/templates/tdmdownloads_ratefile.html');
+    @unlink($modulePath . '/templates/tdmdownloads_singlefile.html');
+    @unlink($modulePath . '/templates/tdmdownloads_submit.html');
+    @unlink($modulePath . '/templates/tdmdownloads_viewcat.html');
+    @unlink($modulePath . '/templates/tdmdownloads_liste.html');
+    @unlink($modulePath . '/templates/tdmdownloads_rss.html');
+    @unlink($modulePath . '/templates/blocks/tdmdownloads_block_new.html');
+    @unlink($modulePath . '/templates/blocks/tdmdownloads_block_random.html');
+    @unlink($modulePath . '/templates/blocks/tdmdownloads_block_rating.html');
+    @unlink($modulePath . '/templates/blocks/tdmdownloads_block_search.html');
+    @unlink($modulePath . '/templates/blocks/tdmdownloads_block_top.html');
     return true;
 }
 

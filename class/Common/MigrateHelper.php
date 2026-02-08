@@ -100,15 +100,12 @@ class MigrateHelper
                 $tables[$tableName]['keys'] = [];
             } else {
                 if (!$skip) {
-                    if (')' === \mb_strtoupper(\substr($line, 0, 1))) {
-                        // end of table definition
+                    if (
+                        ')' === \mb_strtoupper(\substr($line, 0, 1)) ||
+                        'ENGINE' === \mb_strtoupper(\substr($line, 0, 6)) ||
+                        'DEFAULT CHARSET ' === \mb_strtoupper(\substr($line, 0, 16))
+                    ) {
                         // get options
-                        $this->getOptions($line, $options);
-                        $tables[$tableName]['options'] = $options;
-                    } elseif ('ENGINE' === \mb_strtoupper(\substr($line, 0, 6))) {
-                        $this->getOptions($line, $options);
-                        $tables[$tableName]['options'] = $options;
-                    } elseif ('DEFAULT CHARSET ' === \mb_strtoupper(\substr($line, 0, 16))) {
                         $this->getOptions($line, $options);
                         $tables[$tableName]['options'] = $options;
                     } else {
@@ -186,7 +183,8 @@ class MigrateHelper
     {
 
         $arrLine = \explode( '`', $line);
-        if (\count($arrLine) > 0) {
+        if (!empty($arrLine)) {
+
             return $arrLine[1];
         }
 
@@ -206,7 +204,7 @@ class MigrateHelper
         $columns = [];
 
         $arrCol = \explode( ' ', \trim($line));
-        if (\count($arrCol) > 0) {
+        if (!empty($arrCol)) {
             $name = \str_replace(['`'], '', $arrCol[0]);
         } else {
             return false;
@@ -272,7 +270,7 @@ class MigrateHelper
             }
             $line = \trim(\str_replace(['UNIQUE KEY', 'KEY'], '', $line));
             $arrName = \explode('(', $line);
-            if (\count($arrName) > 0) {
+            if (!empty($arrName)) {
                 $name = \str_replace(['`', ' '], '', $arrName[0]);
                 $columns = \str_replace(['`', '),', ')'], '', $arrName[1]);
                 if ('' == $name) {
