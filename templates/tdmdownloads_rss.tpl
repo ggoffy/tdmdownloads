@@ -17,8 +17,12 @@
                     <title><{$channel_title|default:''}></title>
                     <url><{$image_url|default:''}></url>
                     <link><{$channel_link|default:''}></link>
-                    <width><{$image_width|default:0}></width>
-                    <height><{$image_height|default:0}></height>
+                    <{if $image_width|default:'' != ''}>
+                        <width><{$image_width}></width>
+                    <{/if}>
+                    <{if $image_height|default:'' != ''}>
+                        <height><{$image_height}></height>
+                    <{/if}>
                 </image>
             <{/if}>
             <{foreach item=item from=$items|default:[]}>
