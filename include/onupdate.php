@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 use Xmf\Database\Tables;
 use XoopsModules\Tdmdownloads\{
-    Common,
     Common\Configurator,
     Common\Migrate,
+    Common\MigrateHelper,
     Helper,
     Utility
 };
@@ -54,8 +54,9 @@ function xoops_module_pre_update_tdmdownloads(\XoopsModule $module)
     foreach ($uploadFolders as $value) {
         $utility::prepareFolder($value);
     }
-    $migrator = new Migrate();
-    $migrator->synchronizeSchema();
+
+    //$migrator = new Migrate();
+    //$migrator->synchronizeSchema();
     return $xoopsSuccess && $phpSuccess;
 }
 
@@ -68,6 +69,12 @@ function xoops_module_update_tdmdownloads(&$module, $prev_version = null)
     $utility            = new Utility();
     $configurator       = new Configurator();
     $helper->loadLanguage('common');
+
+    $migrate = new Migrate($configurator);
+
+    // convert prev_version into integer
+    $prev_version = (int)(str_replace('.', '', $prev_version));
+
     if ($prev_version < 163) {
         $ret = update_tdmdownloads_v163($module);
     }
@@ -80,6 +87,35 @@ function xoops_module_update_tdmdownloads(&$module, $prev_version = null)
     if ($prev_version < 201) {
         $ret = update_tdmdownloads_v201($module);
     }
+
+    $fileSql = \XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/sql/mysql.sql';
+    // ToDo: add function setDefinitionFile to .\class\libraries\vendor\xoops\xmf\src\Database\Migrate.php
+    // Todo: once we are using setDefinitionFile this part has to be adapted
+    //$fileYaml = \XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . '/sql/update_' . $moduleDirName . '_migrate.yml';
+    //try {
+    //$migrate->setDefinitionFile('update_' . $moduleDirName);
+    //} catch (\Exception $e) {
+    // as long as this is not done default file has to be created
+    $moduleVersionOld = $module->getInfo('version');
+    $moduleVersionNew = \str_replace(['.', '-'], '_', $moduleVersionOld);
+    $fileYaml = \XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . "/sql/{$moduleDirName}_{$moduleVersionNew}_migrate.yml";
+    //}
+
+    // create a schema file based on sql/mysql.sql
+    $migratehelper = new MigrateHelper($fileSql, $fileYaml);
+    if (!$migratehelper->createSchemaFromSqlfile()) {
+        \xoops_error('Error: creation schema file failed!');
+        return false;
+    }
+
+    //create copy for XOOPS 2.5.11 Beta 1 and older versions
+    $fileYaml2 = \XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . "/sql/{$moduleDirName}_{$moduleVersionOld}_migrate.yml";
+    \copy($fileYaml, $fileYaml2);
+
+    // run standard procedure for db migration
+    $migrate->getTargetDefinitions();
+    $migrate->synchronizeSchema();
+
     $errors = $module->getErrors();
     if (!empty($errors)) {
         //        print_r($errors);
