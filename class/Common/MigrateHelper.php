@@ -64,6 +64,10 @@ class MigrateHelper
 
         // read sql file
         $lines = \file($this->fileSql);
+        if (!$lines || \is_null($lines)) {
+            \xoops_error('Error: Unable to read sql file: ' . $this->fileSql);
+            return false;
+        }
 
         // remove unnecessary lines
         foreach ($lines as $key => $value) {
@@ -159,9 +163,14 @@ class MigrateHelper
         }
 
         // create new file and write schema array into this file
+        $yamlDir = \dirname($this->fileYaml);
+        if (!\is_dir($yamlDir) || !\is_writable($yamlDir)) {
+            \xoops_error('Error: Unable to write YAML schema file to path: ' . $this->fileYaml);
+            return false;
+        }
         $myfile = \fopen($this->fileYaml, "w");
         if (!$myfile || \is_null($myfile)) {
-            \xoops_error('Error: Unable to open sql file!');
+            \xoops_error('Error: Unable to open YAML schema file for writing: ' . $this->fileYaml);
             return false;
         }
         foreach ($schema as $line) {
@@ -258,14 +267,14 @@ class MigrateHelper
 
         $key = [];
 
-        if (\strpos($line, 'RIMARY') > 0) {
+        if (\strpos($line, 'RIMARY') !== false) {
             $key['PRIMARY'] = [];
             $fields = \substr($line, 13, \strlen($line) - 13);
             $key['PRIMARY']['columns'] = \str_replace(['`', '),', ')'], '', $fields);
             $key['PRIMARY']['unique'] = 'true';
         } else {
             $unique = 'false';
-            if (\strpos($line, 'NIQUE') > 0) {
+            if (\strpos($line, 'NIQUE') !== false) {
                 $unique = 'true';
             }
             $line = \trim(\str_replace(['UNIQUE KEY', 'KEY'], '', $line));

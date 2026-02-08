@@ -70,10 +70,10 @@ function xoops_module_update_tdmdownloads(&$module, $prev_version = null)
     $configurator       = new Configurator();
     $helper->loadLanguage('common');
 
-    $migrate = new Migrate($configurator);
+    $migrate = new Migrate();
 
     // convert prev_version into integer
-    $prev_version = (int)(str_replace('.', '', $prev_version));
+    $prev_version = (int)(str_replace('.', '', (string)$prev_version));
 
     if ($prev_version < 163) {
         $ret = update_tdmdownloads_v163($module);
@@ -110,7 +110,10 @@ function xoops_module_update_tdmdownloads(&$module, $prev_version = null)
 
     //create copy for XOOPS 2.5.11 Beta 1 and older versions
     $fileYaml2 = \XOOPS_ROOT_PATH . '/modules/' . $moduleDirName . "/sql/{$moduleDirName}_{$moduleVersionOld}_migrate.yml";
-    \copy($fileYaml, $fileYaml2);
+    if (!\copy($fileYaml, $fileYaml2)) {
+        \xoops_error('Error: could not create schema file copy: ' . $fileYaml2);
+        return false;
+    }
 
     // run standard procedure for db migration
     $migrate->getTargetDefinitions();
